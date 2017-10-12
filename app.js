@@ -1,5 +1,4 @@
 app = (function () {
-
     return {
         init: function () {
             app.view.draw(app.model.getData());
@@ -8,39 +7,43 @@ app = (function () {
                 app.view.draw(app.model.getData());
             });
 
+            $('#new-color').on('change',function() {
+                console.log($(this).val());
+                $(this).css("border-color", "+$(this).val()+");
+                app.model.setColor($(this).val());
+            });
 
-
+            $('#tableau').on('click','.set-color',function() {
+                app.model.setPixelColor($(this).data('x'),$(this).data('y'));
+                app.view.draw(app.model.getData());
+            })
 
         }
     };
-
-
 
 })();
 
 
 app.model = (function () {
-
     var data = {};
     data.size = {};
     data.size.width = 12;
     data.size.height = 12;
     data.colors = [];
     data.pixels = [];
+    data.pencil={};
+    data.pencil.color='#FFF';
     var n = 0;
-    for (i = 0; i < data.size.width; i++) {
-        for (j = 0; j < data.size.height; j++) {
+    for (i = 0; i < data.size.height; i++) {
+        for (j = 0; j < data.size.width; j++) {
             data.pixels[n] = {};
             data.pixels[n].x = i;
             data.pixels[n].y = j;
+            data.pixels[n].id="i-"+i+"_j-"+j;
             data.pixels[n].color = "#CCC";
             n++;
         }
     }
-
-
-
-
     return {
         changeSize: function (x, y) {
             data.size.width = parseInt(x, 10);
@@ -48,6 +51,15 @@ app.model = (function () {
         },
         getData: function () {
             return (data);
+        },
+        setColor:function(c) {
+            data.pencil.color=c;
+        },
+        setPixelColor:function(x,y) {
+           data.pixels.forEach(function(pixel) {
+               if (pixel.x===x && pixel.y===y) pixel.color=data.pencil.color;
+           });
+
         }
 
     };
@@ -61,7 +73,7 @@ app.view = (function () {
         var w=30;
         var h=30;
         var html = '';
-        html += '<div style="float:left;margin:1px;width:'+w+'px;height:'+h+'px;background-color:' + s.color + '"></div>';
+        html += '<a class="set-color" href=# data-y='+s.y+' data-x='+s.x+'><div style="float:left;margin:1px;width:'+w+'px;height:'+h+'px;background-color:' + s.color + '"></div></a>';
         return (html);
 
     }
