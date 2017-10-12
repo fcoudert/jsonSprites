@@ -2,7 +2,7 @@ app = (function () {
 
     return {
         init: function () {
-            console.log('init app...');
+            app.view.draw(app.model.getData());
             $('#valid-size').on('click', function () {
                 app.model.changeSize($('#x-val').val(), $('#y-val').val());
                 app.view.draw(app.model.getData());
@@ -58,8 +58,10 @@ app.model = (function () {
 app.view = (function () {
 
     function drawSquare(s) {
+        var w=30;
+        var h=30;
         var html = '';
-        html += '<span style="margin:1px;width:20px;height:20px;background-color:' + s.color + '"></span>';
+        html += '<div style="float:left;margin:1px;width:'+w+'px;height:'+h+'px;background-color:' + s.color + '"></div>';
         return (html);
 
     }
@@ -67,13 +69,11 @@ app.view = (function () {
 
     return {
         draw: function (D) {
-            console.log('draw asked...');
-            console.log(D);
+           
             var html = '';
             for (i = 0; i < D.size.height; i++) {
                 for (j = 0; j < D.size.width; j++) {
                     D.pixels.forEach(function (pixel) {
-                        console.log(pixel);
                         if (pixel.x === j && pixel.y === i) html += drawSquare(pixel);
                     });
                 }
