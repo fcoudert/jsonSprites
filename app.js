@@ -69,28 +69,47 @@ app.model = (function () {
 
 app.view = (function () {
 
+    function convertCanvasToImage(canvas) {
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        return image;
+    }
+
+
     function drawSquare(s) {
         var w=30;
         var h=30;
         var html = '';
         html += '<a class="set-color" href=# data-y='+s.y+' data-x='+s.x+'><div style="float:left;margin:1px;width:'+w+'px;height:'+h+'px;background-color:' + s.color + '"></div></a>';
         return (html);
-
     }
+
+
+
 
 
     return {
         draw: function (D) {
            
             var html = '';
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
             for (i = 0; i < D.size.height; i++) {
                 for (j = 0; j < D.size.width; j++) {
                     D.pixels.forEach(function (pixel) {
-                        if (pixel.x === j && pixel.y === i) html += drawSquare(pixel);
+                        if (pixel.x === j && pixel.y === i) {
+                            html += drawSquare(pixel);
+                            ctx.fillStyle = pixel.color;
+                            ctx.fillRect(j, i, j+1, i+1);
+                        }
                     });
                 }
                 html += '<br>';
             }
+
+            //fill canvas
+            
+
             console.log(html);
             $('#tableau').html(html);
         }
